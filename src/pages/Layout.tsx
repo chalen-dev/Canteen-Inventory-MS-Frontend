@@ -1,20 +1,14 @@
-
-import './App.css'
-import {AppRoutes} from "../routes/AppRoutes.tsx";
 import {LeftSidebar} from "../components/partials/LeftSidebar.tsx";
-import {Helmet} from "react-helmet-async";
 import { Outlet } from 'react-router-dom';
+import {Header} from "../components/partials/Header.tsx";
 
 
 function Layout() {
 
     return (
         <>
-            <AppRoutes/>
-            <Helmet>
-                <title></title>
-            </Helmet>
-            <LeftSidebar/>
+            <Header />
+            <LeftSidebar />
             <main>
                 <Outlet />
             </main>

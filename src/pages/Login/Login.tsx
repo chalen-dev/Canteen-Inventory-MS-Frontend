@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Text } from "../../components/input/Text";
 import "./Login.css";
+import {Header} from "../../components/partials/Header.tsx";
 
 export function Login() {
     const navigate = useNavigate();
@@ -10,6 +11,7 @@ export function Login() {
 
     return (
         <>
+            <Header />
             <h1>Login</h1>
             <Text
                 name="username"

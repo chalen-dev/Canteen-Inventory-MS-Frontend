@@ -1,7 +1,8 @@
-
 import './App.css'
-import {AppRoutes} from "../routes/AppRoutes.tsx";
-import {BrowserRouter} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {Login} from "./pages/Login/Login.tsx";
+import Layout from "./pages/Layout.tsx";
+import {Dashboard} from "./pages/Dashboard/Dashboard.tsx";
 
 
 function App() {
@@ -9,7 +10,13 @@ function App() {
   return (
       <>
           <BrowserRouter>
-              <AppRoutes/>
+              <Routes>
+                  <Route path="/" element={<Login />}/>
+                  <Route element={<Layout />}>
+                      <Route path="/dashboard" element={<Dashboard />}/>
+                  </Route>
+                  <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
           </BrowserRouter>
       </>
   )
