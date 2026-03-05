@@ -1,26 +1,58 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import {COMPANY_NAME} from "../../config/constants.ts";
+import { Link, useNavigate } from "react-router-dom";
+import { APP_NAME } from "../../config/constants";
 
-type LeftSidebarProps = {} & React.HTMLAttributes<HTMLElement>
+type LeftSidebarProps = {} & React.HTMLAttributes<HTMLElement>;
 
-export function LeftSidebar({...rest}: LeftSidebarProps){
+export function LeftSidebar({ ...rest }: LeftSidebarProps) {
     const navigate = useNavigate();
+
     return (
-        <aside {...rest}>
-            <h1>
-                {COMPANY_NAME}
-            </h1>
-            <nav>
-                <Link to="/dashboard">Dashboard</Link>
-                <Link to="/dashboard">Users</Link>
-                <Link to="/dashboard">Orders</Link>
-                <Link to="/dashboard">Settings</Link>
+        <aside
+            {...rest}
+            className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 p-6 flex flex-col h-screen"
+        >
+            <div className="flex items-center space-x-2 mb-8">
+                <div className="w-8 h-8 bg-gradient-to-br from-primary to-purple-700 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                    {APP_NAME.charAt(0)}
+                </div>
+                <h1 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
+                    {APP_NAME}
+                </h1>
+            </div>
+
+            <nav className="flex flex-col space-y-1 flex-1">
+                <Link
+                    to="/dashboard"
+                    className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                >
+                    Dashboard
+                </Link>
+                <Link
+                    to="/dashboard"
+                    className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                >
+                    Users
+                </Link>
+                <Link
+                    to="/dashboard"
+                    className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                >
+                    Orders
+                </Link>
+                <Link
+                    to="/dashboard"
+                    className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                >
+                    Settings
+                </Link>
             </nav>
-            <button className="logout-btn" onClick={() => navigate('/')}>
+
+            <button
+                onClick={() => navigate('/')}
+                className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors text-left w-full border-t border-gray-200 dark:border-gray-800 pt-4 mt-4 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
                 Logout
             </button>
         </aside>
     );
 }
-

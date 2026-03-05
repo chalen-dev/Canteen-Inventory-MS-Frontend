@@ -1,8 +1,8 @@
 import './App.css'
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {Login} from "./pages/Login/Login.tsx";
+import {Login} from "./pages/Login.tsx";
 import Layout from "./pages/Layout.tsx";
-import {Dashboard} from "./pages/Dashboard/Dashboard.tsx";
+import {Dashboard} from "./pages/Dashboard.tsx";
 
 
 function App() {

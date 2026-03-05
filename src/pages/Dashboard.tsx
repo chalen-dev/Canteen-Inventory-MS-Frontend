@@ -1,6 +1,7 @@
-import "./Dashboard.css";
-import "../../components/partials/Header";
+
+import "../components/partials/Header.tsx";
 import {Helmet} from "react-helmet-async";
+import {Card} from "../components/partials/Card.tsx";
 
 export function Dashboard() {
     //const navigate = useNavigate();
@@ -10,7 +11,9 @@ export function Dashboard() {
             <Helmet>
                 <title>Dashboard</title>
             </Helmet>
-            <h1>Dashboard</h1>
+            <h1>Analytics</h1>
+            <Card />
+            <Card />
         </>
 
     );
