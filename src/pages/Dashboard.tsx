@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { Card } from "../components/partials/Card";   // corrected import
+import { Card } from "../components/partials/Card";
 import { useEffect } from "react";
 import { useHeaderTitle } from "../contexts/HeaderTitleContext";
 

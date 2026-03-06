@@ -30,7 +30,7 @@ export const Header = ({ includeIcon = false }: Props) => {
                     }`}
                 >
                     <span className="text-xs text-gray-600 dark:text-gray-300">
-                        {theme === 'light' ? '🌙' : '☀️'}
+                        {theme === 'light' ? '☀️' : '🌙'}
                     </span>
                 </span>
             </button>
