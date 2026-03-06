@@ -1,22 +1,26 @@
 import { useTheme } from '../../contexts/ThemeContext';
 import { useHeaderTitle } from '../../contexts/HeaderTitleContext';
 import { Icon } from "./Icon";
+import {APP_INITIALS} from "../../config/constants.ts";
 
 type Props = {
     includeIcon?: boolean;
+    iconText?: string;
 };
 
-export const Header = ({ includeIcon = false }: Props) => {
+export const Header =
+    ({
+         includeIcon = false,
+         iconText = APP_INITIALS
+    }: Props) => {
     const { theme, toggleTheme } = useTheme();
     const { title } = useHeaderTitle();
 
-    // Fallback in case title is empty
-    const iconLetter = title ? title.charAt(0).toUpperCase() : '?';
 
     return (
         <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-800 px-6 sm:px-8 py-3 flex justify-between items-center h-[70px] sticky top-0 z-10 shadow-sm">
             <div className={`flex items-center ${includeIcon ? 'space-x-2' : ''}`}>
-                {includeIcon && <Icon text={iconLetter} size={1} />}
+                {includeIcon && <Icon text={iconText} size={1} />}
                 <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
             </div>
             <button

@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
-import { Card } from "../components/partials/Card";
+import { Card } from "../../components/partials/Card.tsx";
 import { useEffect } from "react";
-import { useHeaderTitle } from "../contexts/HeaderTitleContext";
+import { useHeaderTitle } from "../../contexts/HeaderTitleContext.tsx";
 
 export function Dashboard() {
     const { setTitle } = useHeaderTitle();

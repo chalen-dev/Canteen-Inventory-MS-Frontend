@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import {useEffect, useState} from "react";
-import { Header } from "../components/partials/Header";
-import { Text } from "../components/input/Text";
-import {Icon} from "../components/partials/Icon.tsx";
-import {Password} from "../components/input/Password.tsx";
-import {useHeaderTitle} from "../contexts/HeaderTitleContext.tsx";
-import {APP_NAME} from "../config/constants.ts";
+import { Text } from "../../components/input/Text.tsx";
+import {Icon} from "../../components/partials/Icon.tsx";
+import {Password} from "../../components/input/Password.tsx";
+import {useHeaderTitle} from "../../contexts/HeaderTitleContext.tsx";
+import {APP_NAME} from "../../config/constants.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -18,7 +17,6 @@ export function Login() {
     }, [setTitle]);
     return (
         <>
-            <Header includeIcon={true}/>
             <div className="flex justify-center items-center min-h-[calc(100vh-70px)] p-4 bg-gray-50 dark:bg-gray-900">
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-8 w-full max-w-md shadow-lg border border-gray-100 dark:border-gray-700">
                     <div className="flex flex-col items-center mb-6">

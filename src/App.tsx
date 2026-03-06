@@ -1,8 +1,9 @@
 import './App.css'
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {Login} from "./pages/Login.tsx";
-import Layout from "./pages/Layout.tsx";
-import {Dashboard} from "./pages/Dashboard.tsx";
+import {Login} from "./pages/auth/Login.tsx";
+import AuthLayout from "./pages/AuthLayout.tsx";
+import {Dashboard} from "./pages/records/Dashboard.tsx";
+import GuestLayout from "./pages/GuestLayout.tsx";
 
 
 function App() {
@@ -11,8 +12,10 @@ function App() {
       <>
           <BrowserRouter>
               <Routes>
-                  <Route path="/" element={<Login />}/>
-                  <Route element={<Layout />}>
+                  <Route element={<GuestLayout />}>
+                      <Route path="/" element={<Login />}/>
+                  </Route>
+                  <Route element={<AuthLayout />}>
                       <Route path="/dashboard" element={<Dashboard />}/>
                   </Route>
                   <Route path="*" element={<Navigate to="/" />} />

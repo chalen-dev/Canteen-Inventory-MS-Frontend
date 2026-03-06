@@ -1,5 +1,4 @@
-import {APP_NAME} from "../../config/constants.ts";
-import {getFirstLetter} from "../../config/nameHelpers.ts";
+import {APP_INITIALS} from "../../config/constants.ts";
 
 type props = {
     text?: string;
@@ -9,7 +8,7 @@ type props = {
 export function Icon
 (
     {
-        text = getFirstLetter(APP_NAME),
+        text = APP_INITIALS,
         size = 1,
         ...rest
     }
