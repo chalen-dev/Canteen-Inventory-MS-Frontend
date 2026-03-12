@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { Header } from '../common/Header';
-import { LeftSidebar } from '../common/LeftSidebar';
+import { LeftSidebar } from '../common/sidebar/LeftSidebar.tsx';
 
 export function AuthLayout() {
     return (
