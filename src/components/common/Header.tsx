@@ -1,6 +1,6 @@
 import { useTheme } from '../../contexts/ThemeContext';
 import { useHeaderTitle } from '../../contexts/HeaderTitleContext';
-import { Icon } from "./Icon";
+import { Icon } from "./Icon.tsx";
 import {APP_INITIALS} from "../../utils/constants.ts";
 
 type Props = {

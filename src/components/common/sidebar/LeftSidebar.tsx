@@ -36,7 +36,7 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
     return (
         <aside
             {...rest}
-            className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 p-6 flex flex-col h-screen shadow-sm"
+            className="fixed top-0 left-0 w-64 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 p-6 flex flex-col shadow-sm overflow-y-auto"
         >
             {/* Logo / App name */}
             <div className="flex items-center space-x-2 mb-8">
@@ -56,9 +56,6 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
                             <NavLink to="/dashboard" icon="fa-chart-line">
                                 Dashboard
                             </NavLink>
-                            <NavLink to="" icon="fa-users">
-                                Users
-                            </NavLink>
                         </>
                     )}
 
@@ -73,7 +70,7 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
                     {( isCustomer &&
                         <>
                             <NavLink to="/" icon="fa-cart-shopping">
-                                Order
+                                Place Order
                             </NavLink>
                             <NavLink to="/" icon="fa-clock-rotate-left">
                                 Order History
@@ -86,8 +83,19 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
                             <NavLink to="" icon="fa-boxes">
                                 Inventory
                             </NavLink>
-                            <NavLink to="" icon="fa-utensils">
+                            <NavLink to="/menuList" icon="fa-utensils">
                                 Menu Items
+                            </NavLink>
+                            <NavLink to="/categories" icon="fa-cart-shopping">
+                                Orders
+                            </NavLink>
+                        </>
+                    )}
+
+                    {isAdmin && (
+                        <>
+                            <NavLink to="" icon="fa-users">
+                                Users
                             </NavLink>
                         </>
                     )}

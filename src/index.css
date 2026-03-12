@@ -20,3 +20,6 @@ body {
 .dark body {
     background-color: #1a1a1a; /* or use Tailwind's gray-900 */
 }
+.menu-list-container {
+    min-height: 300px; /* or whatever suits your layout */
+}

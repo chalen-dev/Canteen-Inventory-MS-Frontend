@@ -1,15 +1,20 @@
 
 import {useAuth} from "../../contexts/AuthContext.tsx";
-import {Login} from "./Login.tsx";
-import {Outlet} from "react-router-dom";
+import {Navigate, Outlet} from "react-router-dom";
+import {LoadingScreen} from "../common/loading/LoadingScreen.tsx";
 
 
 export function ProtectedRoute() {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
+
+    if (loading) {
+        return (
+            <LoadingScreen />
+        );
+    }
 
     if (!user) {
-        console.log('Redirecting to /unauthorized');
-        return <Login />;
+        return <Navigate to="/" />;
     }
 
     // If authenticated, render the child routes (which will be wrapped in AuthLayout)

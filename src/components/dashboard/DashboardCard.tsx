@@ -3,7 +3,7 @@ type props = {
     value?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export function Card({
+export function DashboardCard({
                          label = 'Label',
                          value = 'Value',
                          className = '',

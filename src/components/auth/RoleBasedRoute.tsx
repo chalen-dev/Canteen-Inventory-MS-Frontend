@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import {LoadingSpinner} from "../common/Loading.tsx";
+import {LoadingSpinner} from "../common/loading/LoadingIcon.tsx";
 
 interface RoleBasedRouteProps {
     allowedRoles: string | string[]; // e.g., 'admin' or ['admin', 'cashier']

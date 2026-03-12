@@ -3,14 +3,14 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Text } from '../common/input/Text';
-import { Icon } from '../common/Icon';
+import { Icon } from '../common/Icon.tsx';
 import { Password } from '../common/input/Password';
 import { useHeaderTitle } from '../../contexts/HeaderTitleContext';
 import { APP_NAME } from '../../utils/constants';
 import { showToast } from '../../utils/swalHelpers';
 import axios from 'axios';
 import { useState, type SyntheticEvent } from 'react';
-import {LoadingSpinner} from "../common/Loading.tsx";
+import {LoadingSpinner} from "../common/loading/LoadingIcon.tsx";
 
 export function Login() {
     const navigate = useNavigate();

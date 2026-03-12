@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { Card } from "./Card.tsx";
+import { DashboardCard } from "./DashboardCard.tsx";
 import { useEffect } from "react";
 import { useHeaderTitle } from "../../contexts/HeaderTitleContext.tsx";
 
@@ -26,12 +26,12 @@ export function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card label="Total Users" value="12,345" />
-                <Card label="Revenue" value="$54,678" />
-                <Card label="Orders" value="890" />
-                <Card label="Active Sessions" value="342" />
-                <Card label="Conversion Rate" value="2.4%" />
-                <Card label="Avg. Order Value" value="$61.20" />
+                <DashboardCard label="Total Users" value="12,345" />
+                <DashboardCard label="Revenue" value="$54,678" />
+                <DashboardCard label="Orders" value="890" />
+                <DashboardCard label="Active Sessions" value="342" />
+                <DashboardCard label="Conversion Rate" value="2.4%" />
+                <DashboardCard label="Avg. Order Value" value="$61.20" />
             </div>
         </>
     );

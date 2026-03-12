@@ -9,13 +9,13 @@ import {Unauthorized} from "./components/errors/Unauthorized.tsx";
 import {RoleBasedRoute} from "./components/auth/RoleBasedRoute.tsx";
 import POSInterface from "./components/orders/POSInterface.tsx";
 import {Order} from "./components/orders/Order.tsx";
+import {MenuList} from "./components/menu/MenuList.tsx";
 
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-
                 <Route element={<GuestLayout />}>
                     <Route path="/" element={<Login />} />
                     <Route path="/unauthorized" element={<Unauthorized />} />
@@ -31,6 +31,10 @@ function App() {
 
                         <Route element={<RoleBasedRoute allowedRoles="cashier" />}>
                             <Route path="/pos" element={<POSInterface />} />
+                        </Route>
+
+                        <Route element={<RoleBasedRoute allowedRoles={['admin', 'cashier']} />}>
+                            <Route path="/menuList" element={<MenuList />} />
                         </Route>
 
                         <Route element={<RoleBasedRoute allowedRoles="customer" />}>
