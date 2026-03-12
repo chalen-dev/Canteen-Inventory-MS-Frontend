@@ -1,11 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
-import { APP_NAME } from "../../services/constants";
-import { showConfirmation, showToast } from "../../services/swalHelpers";
+import { APP_NAME } from "../../utils/constants.ts";
+import { showConfirmation, showToast } from "../../utils/swalHelpers.ts";
+import {useState} from "react";
+import {useAuth} from "../../contexts/AuthContext.tsx";
 
 type LeftSidebarProps = {} & React.HTMLAttributes<HTMLElement>;
 
 export function LeftSidebar({ ...rest }: LeftSidebarProps) {
     const navigate = useNavigate();
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+    const { logout } = useAuth();
+
+    const toggleMenu = (menu: string) => {
+        setOpenMenus(prev => ({ ...prev, [menu]: !prev[menu] }));
+    };
 
     const handleLogout = async () => {
         const confirmed = await showConfirmation(
@@ -17,7 +25,8 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
 
         if (confirmed) {
             showToast('Logged out.', 'info');
-            navigate('/');
+            await logout();
+            navigate('/', { replace: true });
         }
     };
 
@@ -37,6 +46,7 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
 
             <nav className="flex flex-col flex-1">
                 <div className="space-y-1 pb-4 border-b border-gray-100 dark:border-gray-800">
+
                     <Link
                         to="/dashboard"
                         className="flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
@@ -44,20 +54,32 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
                         <i className="fas fa-chart-line w-5 text-center" />
                         <span>Dashboard</span>
                     </Link>
-                    <Link
-                        to="/dashboard"
-                        className="flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                    >
-                        <i className="fas fa-users w-5 text-center" />
-                        <span>Users</span>
-                    </Link>
-                    <Link
-                        to="/dashboard"
-                        className="flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                    >
-                        <i className="fas fa-shopping-cart w-5 text-center" />
-                        <span>Orders</span>
-                    </Link>
+                    {/* Orders with collapsible submenu */}
+                    <div>
+                        <button
+                            onClick={() => toggleMenu('orders')}
+                            className="w-full flex items-center justify-between px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                        >
+                          <span className="flex items-center gap-3">
+                            <i className="fas fa-shopping-cart w-5 text-center" />
+                            <span>Orders</span>
+                          </span>
+                            <i className={`fas fa-chevron-${openMenus['orders'] ? 'up' : 'down'} text-xs transition-transform`} />
+                        </button>
+
+                        {openMenus['orders'] && (
+                            <div className="ml-8 mt-1 space-y-1">
+                                <Link
+                                    to="/dashboard/pos"
+                                    className="block px-4 py-2 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors"
+                                >
+                                    <i className="fas fa-cash-register w-4 mr-2" />
+                                    Point of Sale
+                                </Link>
+                                {/* Add more sub‑items here */}
+                            </div>
+                        )}
+                    </div>
                     <Link
                         to="/dashboard"
                         className="flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-primary/10 hover:text-primary dark:hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"

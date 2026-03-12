@@ -1,7 +1,7 @@
 import { useTheme } from '../../contexts/ThemeContext';
 import { useHeaderTitle } from '../../contexts/HeaderTitleContext';
 import { Icon } from "./Icon";
-import {APP_INITIALS} from "../../services/constants.ts";
+import {APP_INITIALS} from "../../utils/constants.ts";
 
 type Props = {
     includeIcon?: boolean;

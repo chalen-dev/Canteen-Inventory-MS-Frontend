@@ -1,28 +1,37 @@
-import { useNavigate } from "react-router-dom";
-import {useEffect, useState, type SyntheticEvent} from "react";  // ✅ import FormEvent
-import { Text } from "../common/input/Text.tsx";
-import { Icon } from "../common/Icon.tsx";
-import { Password } from "../common/input/Password.tsx";
-import { useHeaderTitle } from "../../contexts/HeaderTitleContext.tsx";
-import { APP_NAME } from "../../services/constants.ts";
-import api from "../../services/api.ts";
-import axios from "axios";
-import {showToast} from "../../services/swalHelpers.ts";
-import {useAuth} from "../../contexts/AuthContext.tsx";
+// components/auth/Login.tsx
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { Text } from '../common/input/Text';
+import { Icon } from '../common/Icon';
+import { Password } from '../common/input/Password';
+import { useHeaderTitle } from '../../contexts/HeaderTitleContext';
+import { APP_NAME } from '../../utils/constants';
+import { showToast } from '../../utils/swalHelpers';
+import axios from 'axios';
+import { useState, type SyntheticEvent } from 'react';
+import {LoadingSpinner} from "../common/Loading.tsx";
 
 export function Login() {
     const navigate = useNavigate();
+    const { user, login } = useAuth();
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [nameError, setNameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
     const { setTitle } = useHeaderTitle();
-    const { login } = useAuth();
 
     useEffect(() => {
         setTitle(APP_NAME);
     }, [setTitle]);
+
+    // Redirect to dashboard once user is logged in
+    useEffect(() => {
+        if (user) {
+            navigate('/dashboard', { replace: true });
+        }
+    }, [user, navigate]);
 
     const handleApiError = (error: unknown) => {
         if (axios.isAxiosError(error) && error.response?.data?.errors) {
@@ -37,11 +46,11 @@ export function Login() {
     const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // reset errors
+        // Reset errors
         setNameError('');
         setPasswordError('');
 
-        // validation
+        // Validation
         if (!name.trim()) {
             setNameError('Name is required.');
             return;
@@ -53,11 +62,9 @@ export function Login() {
 
         setLoading(true);
         try {
-            const response = await api.post('/login', { name, password });
-            localStorage.setItem('token', response.data.access_token);
-            login(name);
-            showToast(`Welcome, ${name}!`)
-            navigate('/dashboard');
+            await login({ name, password });
+            showToast(`Welcome, ${name}!`);
+            // Navigation happens in the useEffect above
         } catch (error) {
             handleApiError(error);
         } finally {
@@ -79,7 +86,7 @@ export function Login() {
                         name="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        label="name or Email"
+                        label="Name or Email"
                         placeholder="johndoe"
                         error={nameError}
                         disabled={loading}
@@ -109,12 +116,17 @@ export function Login() {
                         disabled={loading}
                         className="w-full py-3 bg-primary hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all active:scale-[0.98] shadow-sm hover:shadow-md"
                     >
-                        {loading ? 'Signing in...' : 'Sign In'}
+                        {loading ? (
+                            <div className="flex justify-center items-center gap-3">
+                                <LoadingSpinner size={20} />
+                                <span>Signing in...</span>
+                            </div>
+                        ) : (
+                            'Sign In'
+                        )}
                     </button>
                 </form>
             </div>
         </div>
     );
 }
-
-//onClick={() => navigate('/signup')}

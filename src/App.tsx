@@ -5,8 +5,9 @@ import {Dashboard} from "./components/dashboard/Dashboard.tsx";
 import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
 import {AuthLayout} from "./components/layouts/AuthLayout.tsx";
 import {GuestLayout} from "./components/auth/GuestLayout.tsx";
-import {NotFound} from "./components/errors/NotFound.tsx";
 import {Unauthorized} from "./components/errors/Unauthorized.tsx";
+import {RoleBasedRoute} from "./components/auth/RoleBasedRoute.tsx";
+import POSInterface from "./components/orders/POSInterface.tsx";
 
 
 function App() {
@@ -17,13 +18,19 @@ function App() {
                 <Route element={<GuestLayout />}>
                     <Route path="/" element={<Login />} />
                     <Route path="/unauthorized" element={<Unauthorized />} />
-                    <Route path="*" element={<NotFound />}/>
+                    <Route path="*" element={<Login />}/>
                 </Route>
 
                 <Route element={<ProtectedRoute />}>
                     <Route element={<AuthLayout />}>
-                        <Route path="/dashboard" element={<Dashboard />} />
 
+                        <Route element={<RoleBasedRoute allowedRoles={'admin'} />}>
+                            <Route path="/dashboard" element={<Dashboard />} />
+                        </Route>
+
+                        <Route element={<RoleBasedRoute allowedRoles="cashier" />}>
+                            <Route path="/pos" element={<POSInterface />} />
+                        </Route>
                     </Route>
                 </Route>
             </Routes>
