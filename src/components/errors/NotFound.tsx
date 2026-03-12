@@ -1,14 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useHeaderTitle } from "../../contexts/HeaderTitleContext";
 
 export function NotFound() {
     const navigate = useNavigate();
-    const { setTitle } = useHeaderTitle();
 
-    useEffect(() => {
-        setTitle("Page Not Found");
-    }, [setTitle]);
 
     return (
         <div className="flex justify-center items-center min-h-[calc(100vh-70px)] p-4 bg-gray-50 dark:bg-gray-900">

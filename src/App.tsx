@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
 import {AuthLayout} from "./components/layouts/AuthLayout.tsx";
 import {GuestLayout} from "./components/auth/GuestLayout.tsx";
 import {NotFound} from "./components/errors/NotFound.tsx";
+import {Unauthorized} from "./components/errors/Unauthorized.tsx";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
 
                 <Route element={<GuestLayout />}>
                     <Route path="/" element={<Login />} />
+                    <Route path="/unauthorized" element={<Unauthorized />} />
                     <Route path="*" element={<NotFound />}/>
                 </Route>
 

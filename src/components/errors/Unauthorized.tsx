@@ -1,14 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useHeaderTitle } from "../../contexts/HeaderTitleContext";
 
 export function Unauthorized() {
     const navigate = useNavigate();
-    const { setTitle } = useHeaderTitle();
-
-    useEffect(() => {
-        setTitle("Access Denied");
-    }, [setTitle]);
 
     return (
         <div className="flex justify-center items-center min-h-[calc(100vh-70px)] p-4 bg-gray-50 dark:bg-gray-900">
