@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import { Header } from "./common/Header.tsx";
+import { Header } from '../common/Header.tsx';
 
-function GuestLayout() {
+export function GuestLayout() {
     return (
         <div className="flex">
             <main className="flex-1 flex flex-col min-h-screen">
@@ -13,5 +13,3 @@ function GuestLayout() {
         </div>
     );
 }
-
-export default GuestLayout;

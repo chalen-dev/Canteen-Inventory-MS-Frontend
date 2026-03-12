@@ -1,8 +1,8 @@
-import { LeftSidebar } from "./common/LeftSidebar.tsx";
 import { Outlet } from 'react-router-dom';
-import { Header } from "./common/Header.tsx";
+import { Header } from '../common/Header';
+import { LeftSidebar } from '../common/LeftSidebar';
 
-function AuthLayout() {
+export function AuthLayout() {
     return (
         <div className="flex">
             <LeftSidebar />
@@ -15,5 +15,3 @@ function AuthLayout() {
         </div>
     );
 }
-
-export default AuthLayout;

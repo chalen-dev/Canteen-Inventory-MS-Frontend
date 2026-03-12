@@ -8,6 +8,7 @@ import { APP_NAME } from "../../services/constants.ts";
 import api from "../../services/api.ts";
 import axios from "axios";
 import {showToast} from "../../services/swalHelpers.ts";
+import {useAuth} from "../../contexts/AuthContext.tsx";
 
 export function Login() {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export function Login() {
     const [passwordError, setPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
     const { setTitle } = useHeaderTitle();
+    const { login } = useAuth();
 
     useEffect(() => {
         setTitle(APP_NAME);
@@ -53,6 +55,7 @@ export function Login() {
         try {
             const response = await api.post('/login', { name, password });
             localStorage.setItem('token', response.data.access_token);
+            login(name);
             showToast(`Welcome, ${name}!`)
             navigate('/dashboard');
         } catch (error) {

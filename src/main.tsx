@@ -6,16 +6,19 @@ import App from './App.tsx'
 import { HelmetProvider } from "react-helmet-async"
 import {ThemeProvider} from "./contexts/ThemeContext.tsx";
 import {HeaderTitleProvider} from "./contexts/HeaderTitleContext.tsx";
+import {AuthProvider} from "./contexts/AuthContext.tsx";
 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <HelmetProvider>
-          <HeaderTitleProvider>
-              <ThemeProvider>
-                  <App />
-              </ThemeProvider>
-          </HeaderTitleProvider>
-      </HelmetProvider>
+      <AuthProvider>
+          <HelmetProvider>
+              <HeaderTitleProvider>
+                  <ThemeProvider>
+                      <App />
+                  </ThemeProvider>
+              </HeaderTitleProvider>
+          </HelmetProvider>
+      </AuthProvider>
   </StrictMode>,
 )

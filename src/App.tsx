@@ -1,28 +1,32 @@
 import './App.css'
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {Login} from "./components/auth/Login.tsx";
-import AuthLayout from "./components/AuthLayout.tsx";
 import {Dashboard} from "./components/dashboard/Dashboard.tsx";
-import GuestLayout from "./components/GuestLayout.tsx";
+import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
+import {AuthLayout} from "./components/layouts/AuthLayout.tsx";
+import {GuestLayout} from "./components/auth/GuestLayout.tsx";
+import {NotFound} from "./components/errors/NotFound.tsx";
 
 
 function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
 
-  return (
-      <>
-          <BrowserRouter>
-              <Routes>
-                  <Route element={<GuestLayout />}>
-                      <Route path="/" element={<Login />}/>
-                  </Route>
-                  <Route element={<AuthLayout />}>
-                      <Route path="/dashboard" element={<Dashboard />}/>
-                  </Route>
-                  <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-          </BrowserRouter>
-      </>
-  )
+                <Route element={<GuestLayout />}>
+                    <Route path="/" element={<Login />} />
+                    <Route path="*" element={<NotFound />}/>
+                </Route>
+
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<AuthLayout />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+
+                    </Route>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App
