@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { Header } from "../components/partials/Header";
+import { Header } from "./common/Header.tsx";
 
 function GuestLayout() {
     return (

@@ -1,6 +1,6 @@
 // api.js
 import axios from 'axios';
-import {LARAVEL_APP_API_URL} from "./constants";
+import {LARAVEL_APP_API_URL} from "./constants.ts";
 
 const api = axios.create({
     baseURL: LARAVEL_APP_API_URL,

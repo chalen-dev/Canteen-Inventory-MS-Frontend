@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import {useEffect, useState, type SyntheticEvent} from "react";  // ✅ import FormEvent
-import { Text } from "../../components/input/Text";
-import { Icon } from "../../components/partials/Icon";
-import { Password } from "../../components/input/Password";
-import { useHeaderTitle } from "../../contexts/HeaderTitleContext";
-import { APP_NAME } from "../../../utils/constants";
-import api from "../../../utils/api.ts";
+import { Text } from "../common/input/Text.tsx";
+import { Icon } from "../common/Icon.tsx";
+import { Password } from "../common/input/Password.tsx";
+import { useHeaderTitle } from "../../contexts/HeaderTitleContext.tsx";
+import { APP_NAME } from "../../services/constants.ts";
+import api from "../../services/api.ts";
 import axios from "axios";
-import {showToast} from "../../../utils/swalHelpers.ts";
+import {showToast} from "../../services/swalHelpers.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -59,7 +59,6 @@ export function Login() {
             handleApiError(error);
         } finally {
             setLoading(false);
-
         }
     };
 
@@ -109,17 +108,6 @@ export function Login() {
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
-
-                    <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
-                        Don't have an account?{' '}
-                        <button
-                            type="button"
-                            className="text-primary hover:text-primary-hover font-medium"
-
-                        >
-                            Sign up
-                        </button>
-                    </p>
                 </form>
             </div>
         </div>

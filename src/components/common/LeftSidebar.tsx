@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { APP_NAME } from "../../../utils/constants";
-import { showConfirmation, showToast } from "../../../utils/swalHelpers";
+import { APP_NAME } from "../../services/constants";
+import { showConfirmation, showToast } from "../../services/swalHelpers";
 
 type LeftSidebarProps = {} & React.HTMLAttributes<HTMLElement>;
 
