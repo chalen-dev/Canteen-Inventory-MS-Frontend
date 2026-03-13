@@ -1,6 +1,6 @@
 // components/errors/Unauthorized.jsx
 import { useLocation, useNavigate } from 'react-router-dom';
-import {useAuth} from "../../contexts/AuthContext.tsx";
+import {useAuth} from "../../../contexts/AuthContext.tsx";
 
 export function Unauthorized() {
     const navigate = useNavigate();

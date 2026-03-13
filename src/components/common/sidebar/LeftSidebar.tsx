@@ -80,7 +80,7 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
 
                     {isCashierAndAdmin && (
                         <>
-                            <NavLink to="" icon="fa-boxes">
+                            <NavLink to="/inventory" icon="fa-boxes">
                                 Inventory
                             </NavLink>
                             <NavLink to="/menuList" icon="fa-utensils">

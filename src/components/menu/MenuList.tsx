@@ -1,3 +1,4 @@
+// MenuList.tsx (updated with header)
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import axios from 'axios';
@@ -9,8 +10,8 @@ import { MenuForm } from "./forms/MenuForm.tsx";
 import { MenuSearchForm } from "./forms/MenuSearchForm.tsx";
 import { MenuSelectForm } from "./forms/MenuSelectForm.tsx";
 import { showConfirmation, showToast } from '../../utils/swalHelpers';
-import {Pagination} from "../common/Pagination.tsx";
-import {MenuItemShowModal} from "./partials/MenuItemShowModal.tsx";
+import { Pagination } from "../common/Pagination.tsx";
+import { MenuItemShowModal } from "./partials/MenuItemShowModal.tsx";
 
 export function MenuList() {
     const { setTitle } = useHeaderTitle();
@@ -122,7 +123,7 @@ export function MenuList() {
             code: item.code,
             category_id: item.category?.id ?? 0,
             description: item.description,
-            image_url: item.image_url,   // <-- add this
+            image_url: item.image_url,
         });
         setActiveTab('forms');
         setContentExpanded(true);
@@ -204,8 +205,6 @@ export function MenuList() {
     };
 
     const handleSelectAll = () => {
-        // Select all currently visible (paginated) items? Or all filtered items?
-        // Let's select all items on the current page for practicality.
         const allIds = new Set(paginatedItems.map(item => item.id));
         setSelectedIds(allIds);
     };
@@ -238,7 +237,6 @@ export function MenuList() {
 
         try {
             await api.post('/menu-items/bulk-delete', { ids: Array.from(selectedIds) });
-            // Refresh list after deletion
             await fetchMenuItems();
             setSelectedIds(new Set());
             setSelectionMode(false);
@@ -378,7 +376,30 @@ export function MenuList() {
                 )}
             </div>
 
-            {/* Menu items grid – using paginated items */}
+            {/* Table Header */}
+            {menuItems.length > 0 && (
+                <div className="flex items-center w-full p-4 mb-2 border rounded-lg bg-gray-50 dark:bg-gray-700 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                    {/* Checkbox spacer (only when selectionMode is active) */}
+                    {selectionMode && <div className="w-10" />}
+
+                    {/* ID column */}
+                    <div className={selectionMode ? 'w-20' : 'w-16'}>ID</div>
+
+                    {/* Name column */}
+                    <div className="flex-1">Item Name</div>
+
+                    {/* Category column */}
+                    <div className="w-32">Category</div>
+
+                    {/* Price column */}
+                    <div className="w-24">Price</div>
+
+                    {/* Actions column */}
+                    <div className="w-32 text-right">Actions</div>
+                </div>
+            )}
+
+            {/* Menu items grid */}
             <div className="cards-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.1rem' }}>
                 {paginatedItems.map(item => (
                     <MenuItemCard
@@ -399,7 +420,7 @@ export function MenuList() {
                 )}
             </div>
 
-            {/* Pagination controls */}
+            {/* Pagination */}
             {totalPages > 1 && (
                 <Pagination
                     currentPage={page}
@@ -409,6 +430,7 @@ export function MenuList() {
                 />
             )}
 
+            {/* View Modal */}
             {viewingItemId && (
                 <MenuItemShowModal
                     itemId={viewingItemId}
