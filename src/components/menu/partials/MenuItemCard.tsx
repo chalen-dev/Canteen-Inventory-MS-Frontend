@@ -1,5 +1,5 @@
-import type { MenuItem } from "./menuTypes.ts";
-import { showToast } from "../../utils/swalHelpers.ts";
+import type { MenuItem } from "../menuTypes.ts";
+import { showToast } from "../../../utils/swalHelpers.ts";
 
 interface MenuItemCardProps {
     item: MenuItem;

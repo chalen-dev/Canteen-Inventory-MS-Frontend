@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import api from '../../services/api';
+import api from '../../../services/api.ts';
 import axios from 'axios';
-import { type MenuItem } from './menuTypes';
-import { LoadingSpinner } from '../common/loading/LoadingSpinner';
+import { type MenuItem } from '../menuTypes.ts';
+import { LoadingSpinner } from '../../common/loading/LoadingSpinner.tsx';
 
 interface MenuItemShowModalProps {
     itemId: number | null;

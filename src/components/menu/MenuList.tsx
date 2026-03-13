@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import axios from 'axios';
 import { useHeaderTitle } from "../../contexts/HeaderTitleContext.tsx";
-import { MenuItemCard } from "./MenuItemCard.tsx";
+import { MenuItemCard } from "./partials/MenuItemCard.tsx";
 import type { Category, EditingMenuItem, MenuItem } from "./menuTypes.ts";
 import { FetchingDetails } from "../common/loading/FetchingDetails.tsx";
 import { MenuForm } from "./forms/MenuForm.tsx";
@@ -10,7 +10,7 @@ import { MenuSearchForm } from "./forms/MenuSearchForm.tsx";
 import { MenuSelectForm } from "./forms/MenuSelectForm.tsx";
 import { showConfirmation, showToast } from '../../utils/swalHelpers';
 import {Pagination} from "../common/Pagination.tsx";
-import {MenuItemShowModal} from "./MenuItemShowModal.tsx";
+import {MenuItemShowModal} from "./partials/MenuItemShowModal.tsx";
 
 export function MenuList() {
     const { setTitle } = useHeaderTitle();
