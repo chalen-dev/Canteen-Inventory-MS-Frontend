@@ -39,7 +39,7 @@ export function InventoryCard({
     const handleEdit = () => {
         if (selectionMode) return;
         onEdit(log);
-        showToast('Item has been placed on the edit form.', 'info');
+        showToast(`Item #${log.id} placed on the edit form.`, 'info');
     };
 
     const handleDelete = () => {
@@ -47,9 +47,12 @@ export function InventoryCard({
         onDelete(log.id);
     };
 
+    const isExpired = log.inventory_status === 'expired' ||
+        (log.expiry_date != null && new Date(log.expiry_date) < new Date());
+
     const handleToggleAvailability = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (selectionMode || !onToggleAvailability) return;
+        if (selectionMode || !onToggleAvailability || isExpired) return;
         onToggleAvailability(log.id, log.is_available);
     };
 
@@ -215,7 +218,7 @@ export function InventoryCard({
             <div className="w-20 flex justify-center">
                 <button
                     onClick={handleToggleAvailability}
-                    disabled={selectionMode || !onToggleAvailability}
+                    disabled={selectionMode || !onToggleAvailability || isExpired}
                     className={`flex items-center justify-center gap-1 px-2 py-1 text-xs font-medium rounded-full border shadow-sm transition-all ${
                         log.is_available
                             ? 'bg-green-500 text-white border-green-600 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 dark:border-green-500'

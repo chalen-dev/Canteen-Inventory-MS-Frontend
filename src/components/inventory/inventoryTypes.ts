@@ -32,3 +32,12 @@ export interface InventoryLog {
     // eager loaded relation
     menu_item?: MenuItem;                // when loaded via with('menuItem')
 }
+
+export const InventoryStatus = {
+    IN_STOCK: 'in_stock',
+    LOW_STOCK: 'low_stock',
+    OUT_OF_STOCK: 'out_of_stock',
+    EXPIRED: 'expired',
+} as const;
+
+export type InventoryStatus = typeof InventoryStatus[keyof typeof InventoryStatus];

@@ -23,7 +23,7 @@ export function MenuItemCard({
     const handleEdit = () => {
         if (selectionMode) return;
         onEdit(item);
-        showToast('Item has been placed on the edit form.', 'info');
+        showToast(`Item #${item.id} placed on the edit form.`, 'info');
     };
 
     const handleDelete = () => {

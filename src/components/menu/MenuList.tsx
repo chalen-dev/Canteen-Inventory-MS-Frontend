@@ -119,9 +119,9 @@ export function MenuList() {
     // Mutations
     const deleteMutation = useMutation({
         mutationFn: (id: number) => api.delete(`/menu-items/${id}`),
-        onSuccess: () => {
+        onSuccess: (_data, id) => {
             queryClient.invalidateQueries({ queryKey: ['menu-items'] });
-            showToast('Item deleted successfully', 'success');
+            showToast(`Item #${id} deleted successfully`, 'success');
         },
         onError: (error) => {
             const message = axios.isAxiosError(error)

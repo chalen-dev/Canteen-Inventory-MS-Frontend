@@ -1,6 +1,6 @@
 // contexts/AuthContext.tsx
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type {LoginCredentials, User} from '../types/auth';
+import type {LoginCredentials, User} from '../components/auth/authTypes.ts';
 import { getCurrentUser, logout as logoutService } from '../services/authService.ts';
 import api from '../services/api';
 

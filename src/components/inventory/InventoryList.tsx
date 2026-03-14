@@ -147,9 +147,9 @@ export function InventoryList() {
     // Mutations
     const deleteMutation = useMutation({
         mutationFn: (id: number) => api.delete(`/inventory-logs/${id}`),
-        onSuccess: () => {
+        onSuccess: (_data, id) => {
             queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
-            showToast('Inventory record deleted successfully', 'success');
+            showToast(`Item #${id} deleted successfully`, 'success');
         },
         onError: (error) => {
             const message = axios.isAxiosError(error)
@@ -161,7 +161,7 @@ export function InventoryList() {
 
     const bulkDeleteMutation = useMutation({
         mutationFn: (ids: number[]) => api.post('/inventory-logs/bulk-delete', { ids }),
-        onSuccess: (_, ids) => {
+        onSuccess: (_data, ids) => {
             queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
             setSelectedIds(new Set());
             setSelectionMode(false);
@@ -178,9 +178,9 @@ export function InventoryList() {
     const toggleAvailabilityMutation = useMutation({
         mutationFn: ({ id, is_available }: { id: number; is_available: boolean }) =>
             api.patch(`/inventory-logs/${id}/toggle-availability`, { is_available }),
-        onSuccess: (_, { is_available }) => {
+        onSuccess: (_data, { id, is_available }) => {
             queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
-            showToast(`Item marked as ${is_available ? 'available' : 'unavailable'}`, 'success');
+            showToast(`Item #${id} marked as ${is_available ? 'available' : 'unavailable'}`, 'success');
         },
         onError: (error) => {
             const message = axios.isAxiosError(error)
@@ -193,11 +193,11 @@ export function InventoryList() {
     const bulkToggleMutation = useMutation({
         mutationFn: ({ ids, is_available }: { ids: number[]; is_available: boolean }) =>
             api.post('/inventory-logs/bulk-toggle-availability', { ids, is_available }),
-        onSuccess: (_, { is_available }) => {
+        onSuccess: (_data, { ids, is_available }) => {
             queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
             setSelectedIds(new Set());
             setSelectionMode(false);
-            showToast(`${selectedIds.size} item(s) marked as ${is_available ? 'available' : 'unavailable'}`, 'success');
+            showToast(`${ids.length} item(s) marked as ${is_available ? 'available' : 'unavailable'}`, 'success');
         },
         onError: (error) => {
             const message = axios.isAxiosError(error)
@@ -210,9 +210,9 @@ export function InventoryList() {
     const updateQuantityMutation = useMutation({
         mutationFn: ({ id, quantity }: { id: number; quantity: number }) =>
             api.patch(`/inventory-logs/${id}/quantity`, { quantity_in_stock: quantity }),
-        onSuccess: () => {
+        onSuccess: (_data, { id, quantity }) => {
             queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
-            showToast('Quantity updated successfully', 'success');
+            showToast(`Item #${id} quantity updated to ${quantity}`, 'success');
         },
         onError: (error) => {
             const message = axios.isAxiosError(error)
