@@ -1,4 +1,4 @@
-// components/orders/OrderCard.tsx
+// components/orders/partials/OrderCard.tsx
 import { useState } from 'react';
 import { showToast } from '../../../utils/swalHelpers';
 import type { Order } from "../orderTypes";
@@ -9,6 +9,7 @@ interface OrderCardProps {
     onDelete: (id: number) => void;
     onEdit: (order: Order) => void;
     onView: (id: number) => void;
+    onStatusEdit?: (orderId: number, currentStatus: string) => void;
     selectionMode?: boolean;
     isSelected?: boolean;
     onToggleSelection?: (id: number) => void;
@@ -19,11 +20,15 @@ export function OrderCard({
                               onDelete,
                               onEdit,
                               onView,
+                              onStatusEdit,
                               selectionMode = false,
                               isSelected = false,
                               onToggleSelection
                           }: OrderCardProps) {
     const [expanded, setExpanded] = useState(false);
+
+    // Compute total from order items (fallback to 0)
+    const totalAmount = order.order_items?.reduce((sum, item) => sum + Number(item.amount), 0) || 0;
 
     const handleEdit = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -42,6 +47,12 @@ export function OrderCard({
         e.stopPropagation();
         if (selectionMode) return;
         onView(order.id);
+    };
+
+    const handleStatusClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (selectionMode || !onStatusEdit) return;
+        onStatusEdit(order.id, order.order_status);
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,11 +88,19 @@ export function OrderCard({
             cancelled: { color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300', label: 'Cancelled' },
         };
         const { color, label } = statusMap[order.order_status] || statusMap.pending;
-        return <span className={`px-2 py-1 text-xs font-semibold rounded-full ${color}`}>{label}</span>;
+        return (
+            <span
+                className={`px-2 py-1 text-xs font-semibold rounded-full cursor-pointer transition-opacity hover:opacity-80 ${color}`}
+                onClick={handleStatusClick}
+            >
+                {label}
+            </span>
+        );
     };
 
+    // Stronger selected styles: full border and more visible background
     const selectedStyles = selectionMode && isSelected
-        ? 'bg-blue-200 dark:bg-blue-700 border-l-4 border-l-primary'
+        ? 'bg-blue-100 dark:bg-blue-900/50 border-2 border-primary'
         : '';
 
     const formatDate = (dateString?: string) => {
@@ -94,16 +113,16 @@ export function OrderCard({
 
     return (
         <div
-            className={`border rounded-lg shadow-sm transition-all bg-white dark:bg-gray-800 ${selectedStyles} ${
+            className={`w-full border rounded-lg shadow-sm transition-all bg-white dark:bg-gray-800 ${selectedStyles} ${
                 !selectionMode && 'hover:shadow-md'
             }`}
         >
-            {/* Header row (clickable) */}
+            {/* Header row (clickable) – disable hover when selectionMode is true */}
             <div
                 onClick={handleCardClick}
-                className={`flex items-center w-full p-4 cursor-pointer ${
+                className={`flex items-center w-full p-4 cursor-pointer gap-4 ${
                     expanded ? 'rounded-t-lg' : 'rounded-lg'
-                } hover:bg-gray-50 dark:hover:bg-gray-700`}
+                } ${!selectionMode ? 'hover:bg-gray-50 dark:hover:bg-gray-700' : ''}`}
             >
                 {selectionMode && (
                     <div className="w-10 flex justify-center">
@@ -127,14 +146,14 @@ export function OrderCard({
                     {customerName}
                 </div>
 
-                {/* Status Badge */}
+                {/* Status Badge (clickable) */}
                 <div className="w-24 flex justify-center">
                     {getStatusBadge()}
                 </div>
 
-                {/* Total Amount */}
+                {/* Total Amount (computed from items) */}
                 <div className="w-28 text-gray-900 dark:text-gray-100 font-semibold text-right">
-                    ₱{Number(order.total_amount).toFixed(2)}
+                    ₱{totalAmount.toFixed(2)}
                 </div>
 
                 {/* Items Count */}
@@ -146,16 +165,6 @@ export function OrderCard({
                 <div className="w-28 text-gray-600 dark:text-gray-300 text-center">
                     {formatDate(order.created_at)}
                 </div>
-
-                {/* Expand/collapse toggle */}
-                <button
-                    onClick={handleExpandToggle}
-                    disabled={selectionMode}
-                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label={expanded ? 'Collapse' : 'Expand'}
-                >
-                    <i className={`fas fa-chevron-${expanded ? 'up' : 'down'} text-sm`} />
-                </button>
 
                 {/* Actions */}
                 <div className="w-40 flex gap-2 justify-end">
@@ -181,6 +190,16 @@ export function OrderCard({
                         Delete
                     </button>
                 </div>
+
+                {/* Expand/collapse toggle (rightmost) */}
+                <button
+                    onClick={handleExpandToggle}
+                    disabled={selectionMode}
+                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label={expanded ? 'Collapse' : 'Expand'}
+                >
+                    <i className={`fas fa-chevron-${expanded ? 'up' : 'down'} text-sm`} />
+                </button>
             </div>
 
             {/* Expanded content: order items */}

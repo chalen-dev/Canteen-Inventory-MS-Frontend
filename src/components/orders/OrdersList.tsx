@@ -10,13 +10,24 @@ import { TabBar } from '../common/TabBar';
 import { showToast, showConfirmation } from '../../utils/swalHelpers';
 import { OrderCard } from './partials/OrderCard';
 import { OrderForm } from './forms/OrderForm';
-import type { Order, User } from './orderTypes';
+import { OrderSearchForm } from './forms/OrderSearchForm';
+import type { Order, User, OrderStatus } from './orderTypes';
 import type { InventoryLog } from '../inventory/inventoryTypes';
+import {OrderActionForm} from "./forms/OrderActionForm.tsx";
 
 export function OrdersList() {
     const { setTitle } = useHeaderTitle();
     const queryClient = useQueryClient();
     const tabBarRef = useRef<HTMLDivElement>(null);
+
+    // Fetch current user to determine role
+    const { data: currentUser } = useQuery({
+        queryKey: ['currentUser'],
+        queryFn: async () => {
+            const response = await api.get('/user');
+            return response.data as User;
+        },
+    });
 
     // Fetch orders
     const {
@@ -34,7 +45,6 @@ export function OrdersList() {
     // Fetch inventory logs (for item selection)
     const {
         data: inventoryLogs = [],
-        isLoading: inventoryLogsLoading
     } = useQuery({
         queryKey: ['inventory-logs'],
         queryFn: async () => {
@@ -43,14 +53,13 @@ export function OrdersList() {
         },
     });
 
-    // Fetch users (for customer selection)
+    // Fetch customers (for customer selection)
     const {
-        data: users = [],
-        isLoading: usersLoading
+        data: customers = [],
     } = useQuery({
-        queryKey: ['users'],
+        queryKey: ['customers'],
         queryFn: async () => {
-            const response = await api.get<User[]>('/users');
+            const response = await api.get<User[]>('/users/customers');
             return response.data;
         },
     });
@@ -60,36 +69,84 @@ export function OrdersList() {
     const [contentExpanded, setContentExpanded] = useState(false);
     const [editingOrder, setEditingOrder] = useState<Order | null>(null);
 
-    // Selection mode states (for future)
+    // Selection mode states
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
+    // Search & filter states
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedStatuses, setSelectedStatuses] = useState<Set<OrderStatus>>(new Set());
+    const [sortBy, setSortBy] = useState<'created_at' | 'total_amount' | 'customer_name' | 'status'>('created_at');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc'); // newest first by default
 
     // Pagination (client-side)
     const [page, setPage] = useState(1);
     const perPage = 10;
 
-    // Sticky header offset
-    const [headerTopOffset, setHeaderTopOffset] = useState(160);
-
     useEffect(() => {
         setTitle('Orders');
     }, [setTitle]);
 
-    // ResizeObserver for sticky header
+    // ResizeObserver for sticky header (kept for future table header)
     useEffect(() => {
         if (!tabBarRef.current) return;
-        const observer = new ResizeObserver(entries => {
-            for (const entry of entries) {
-                setHeaderTopOffset(50 + entry.contentRect.height);
-            }
-        });
+        const observer = new ResizeObserver(() => {});
         observer.observe(tabBarRef.current);
         return () => observer.disconnect();
     }, []);
 
+    // Filter and sort orders
+    const filteredOrders = orders
+        .filter(order => {
+            const term = searchTerm.toLowerCase();
+            const customerName = order.user?.name?.toLowerCase() || '';
+            const description = order.description?.toLowerCase() || '';
+            const matchesSearch = !searchTerm || customerName.includes(term) || description.includes(term);
+
+            const matchesStatus = selectedStatuses.size === 0 || selectedStatuses.has(order.order_status);
+
+            return matchesSearch && matchesStatus;
+        })
+        .sort((a, b) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let aVal: any, bVal: any;
+            switch (sortBy) {
+                case 'created_at':
+                    aVal = a.created_at ? new Date(a.created_at).getTime() : 0;
+                    bVal = b.created_at ? new Date(b.created_at).getTime() : 0;
+                    break;
+                case 'total_amount':
+                    aVal = a.total_amount;
+                    bVal = b.total_amount;
+                    break;
+                case 'customer_name':
+                    aVal = a.user?.name || '';
+                    bVal = b.user?.name || '';
+                    break;
+                case 'status':
+                    aVal = a.order_status;
+                    bVal = b.order_status;
+                    break;
+                default:
+                    return 0;
+            }
+
+            if (typeof aVal === 'string' && typeof bVal === 'string') {
+                return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+            } else {
+                return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+        });
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setPage(1);
+    }, [searchTerm, selectedStatuses, sortBy, sortOrder]);
+
     // Paginated items
-    const totalPages = Math.ceil(orders.length / perPage);
-    const paginatedOrders = orders.slice((page - 1) * perPage, page * perPage);
+    const totalPages = Math.ceil(filteredOrders.length / perPage);
+    const paginatedOrders = filteredOrders.slice((page - 1) * perPage, page * perPage);
 
     // Mutations
     const deleteMutation = useMutation({
@@ -153,14 +210,6 @@ export function OrdersList() {
         deleteMutation.mutate(id);
     };
 
-    // Selection handlers (for future)
-    const toggleSelectionMode = () => {
-        if (selectionMode) setSelectedIds(new Set());
-        setSelectionMode(!selectionMode);
-    };
-
-    const handleSelectAll = () => setSelectedIds(new Set(paginatedOrders.map(order => order.id)));
-
     const handleToggleItemSelection = (id: number) => {
         setSelectedIds(prev => {
             const newSet = new Set(prev);
@@ -170,19 +219,26 @@ export function OrdersList() {
         });
     };
 
-    const handleDeleteSelected = async () => {
-        if (selectedIds.size === 0) {
-            showToast('No items selected', 'info');
-            return;
-        }
-        const confirmed = await showConfirmation(
-            'Confirm Bulk Delete',
-            `Are you sure you want to delete ${selectedIds.size} order(s)?`,
-            'warning',
-            'Yes, delete'
-        );
-        if (!confirmed) return;
-        bulkDeleteMutation.mutate(Array.from(selectedIds));
+    // Filter handlers
+    const handleStatusToggle = (status: OrderStatus) => {
+        setSelectedStatuses(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(status)) newSet.delete(status);
+            else newSet.add(status);
+            return newSet;
+        });
+    };
+
+    const handleSortChange = (by: typeof sortBy, order: typeof sortOrder) => {
+        setSortBy(by);
+        setSortOrder(order);
+    };
+
+    const handleResetFilters = () => {
+        setSearchTerm('');
+        setSelectedStatuses(new Set());
+        setSortBy('created_at');
+        setSortOrder('desc');
     };
 
     const goToPage = (newPage: number) => setPage(newPage);
@@ -220,18 +276,46 @@ export function OrdersList() {
                                 noCard={true}
                                 editingOrder={editingOrder}
                                 inventoryLogs={inventoryLogs}
-                                users={users}
+                                customers={customers}
+                                userRole={currentUser?.role}
                             />
                         )}
                         {activeTab === 'search' && (
-                            <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                                Search and filter coming soon...
-                            </div>
+                            <OrderSearchForm
+                                searchTerm={searchTerm}
+                                onSearchChange={setSearchTerm}
+                                selectedStatuses={selectedStatuses}
+                                onStatusToggle={handleStatusToggle}
+                                sortBy={sortBy}
+                                sortOrder={sortOrder}
+                                onSortChange={handleSortChange}
+                                onReset={handleResetFilters}
+                            />
                         )}
                         {activeTab === 'select' && (
-                            <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                                Bulk actions coming soon...
-                            </div>
+                            <OrderActionForm
+                                selectionMode={selectionMode}
+                                onToggleMode={() => {
+                                    setSelectionMode(!selectionMode);
+                                    if (selectionMode) setSelectedIds(new Set());
+                                }}
+                                onSelectAll={() => setSelectedIds(new Set(paginatedOrders.map(order => order.id)))}
+                                onDeleteSelected={async () => {
+                                    if (selectedIds.size === 0) {
+                                        showToast('No orders selected', 'info');
+                                        return;
+                                    }
+                                    const confirmed = await showConfirmation(
+                                        'Confirm Bulk Delete',
+                                        `Are you sure you want to delete ${selectedIds.size} order(s)?`,
+                                        'warning',
+                                        'Yes, delete'
+                                    );
+                                    if (!confirmed) return;
+                                    bulkDeleteMutation.mutate(Array.from(selectedIds));
+                                }}
+                                selectedCount={selectedIds.size}
+                            />
                         )}
                     </>
                 )}
@@ -251,9 +335,9 @@ export function OrdersList() {
                         onToggleSelection={handleToggleItemSelection}
                     />
                 ))}
-                {orders.length === 0 && (
+                {filteredOrders.length === 0 && (
                     <div className="w-full text-center py-8 text-gray-500 dark:text-gray-400">
-                        No orders found.
+                        No orders match your filters.
                     </div>
                 )}
             </div>

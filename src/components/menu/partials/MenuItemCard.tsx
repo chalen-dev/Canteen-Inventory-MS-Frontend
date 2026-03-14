@@ -48,15 +48,16 @@ export function MenuItemCard({
         }
     };
 
+    // Full border + background for selected state
     const selectedStyles = selectionMode && isSelected
-        ? 'bg-blue-200 dark:bg-blue-700 border-l-4 border-l-primary'
+        ? 'bg-blue-100 dark:bg-blue-900/50 border-2 border-primary'
         : '';
 
     return (
         <div
             onClick={handleCardClick}
-            className={`flex items-center w-full p-4 border rounded-lg shadow-sm transition-all bg-white dark:bg-gray-800 ${selectedStyles} cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                !selectionMode && 'hover:shadow-md'
+            className={`flex items-center w-full p-4 border rounded-lg shadow-sm transition-all bg-white dark:bg-gray-800 ${selectedStyles} cursor-pointer ${
+                !selectionMode ? 'hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md' : ''
             }`}
         >
             {selectionMode && (
