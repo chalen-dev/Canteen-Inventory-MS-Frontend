@@ -13,17 +13,15 @@ import { Pagination } from "../common/Pagination";
 import { showToast, showConfirmation } from '../../utils/swalHelpers';
 import { TabBar } from "../common/TabBar";
 import { type Column, TableHeader } from "../common/TableHeader";
-import type { InventoryLog, MenuItem } from "./inventoryTypes";
+import type {ArchiveFilter, AvailabilityFilter, InventoryLog, MenuItem, SortField, SortOrder} from "./inventoryTypes";
+import {getEffectiveStatus} from "./inventoryUtils.ts";
 
-// Types for sort and filter
-type SortField = 'name' | 'quantity' | 'date_acquired' | 'expiry_date';
-type SortOrder = 'asc' | 'desc';
-type AvailabilityFilter = 'all' | 'available' | 'unavailable';
 
 export function InventoryList() {
     const { setTitle } = useHeaderTitle();
     const queryClient = useQueryClient();
     const tabBarRef = useRef<HTMLDivElement>(null);
+    const [archiveFilter, setArchiveFilter] = useState<ArchiveFilter>('unarchived');
 
     const {
         data: inventoryLogs = [],
@@ -97,14 +95,21 @@ export function InventoryList() {
             const itemCode = log.menu_item?.code?.toLowerCase() || '';
             const matchesSearch = !searchTerm || itemName.includes(term) || itemCode.includes(term);
 
-            const matchesStatus = selectedStatuses.size === 0 || (log.inventory_status && selectedStatuses.has(log.inventory_status));
+            const effectiveStatus = getEffectiveStatus(log);
+            const matchesStatus = selectedStatuses.size === 0 || selectedStatuses.has(effectiveStatus);
 
             const matchesAvailability =
                 availabilityFilter === 'all' ||
                 (availabilityFilter === 'available' && log.is_available) ||
                 (availabilityFilter === 'unavailable' && !log.is_available);
 
-            return matchesSearch && matchesStatus && matchesAvailability;
+            // New archive filter
+            const matchesArchive =
+                archiveFilter === 'all' ||
+                (archiveFilter === 'archived' && log.is_archived) ||
+                (archiveFilter === 'unarchived' && !log.is_archived);
+
+            return matchesSearch && matchesStatus && matchesAvailability && matchesArchive;
         })
         .sort((a, b) => {
             const getCompareValue = (log: InventoryLog, field: SortField): number | string => {
@@ -222,6 +227,38 @@ export function InventoryList() {
         },
     });
 
+    const bulkArchiveMutation = useMutation({
+        mutationFn: (ids: number[]) => api.post('/inventory-logs/bulk-archive', { ids }),
+        onSuccess: (_data, ids) => {
+            queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
+            setSelectedIds(new Set());
+            setSelectionMode(false);
+            showToast(`${ids.length} item(s) archived successfully`, 'success');
+        },
+        onError: (error) => {
+            const message = axios.isAxiosError(error)
+                ? error.response?.data?.message || error.message
+                : 'Bulk archive failed';
+            showToast(message, 'error');
+        },
+    });
+
+    const bulkUnarchiveMutation = useMutation({
+        mutationFn: (ids: number[]) => api.post('/inventory-logs/bulk-unarchive', { ids }),
+        onSuccess: (_data, ids) => {
+            queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
+            setSelectedIds(new Set());
+            setSelectionMode(false);
+            showToast(`${ids.length} item(s) unarchived successfully`, 'success');
+        },
+        onError: (error) => {
+            const message = axios.isAxiosError(error)
+                ? error.response?.data?.message || error.message
+                : 'Bulk unarchive failed';
+            showToast(message, 'error');
+        },
+    });
+
     // Handlers
     const handleEdit = (log: InventoryLog) => {
         setEditingLog(log);
@@ -270,10 +307,13 @@ export function InventoryList() {
         setSortOrder(order);
     };
 
+    const handleArchiveChange = (filter: ArchiveFilter) => setArchiveFilter(filter);
+
     const handleResetFilters = () => {
         setSearchTerm('');
         setSelectedStatuses(new Set());
         setAvailabilityFilter('all');
+        setArchiveFilter('unarchived');
         setSortBy('date_acquired');
         setSortOrder('asc');
     };
@@ -344,6 +384,36 @@ export function InventoryList() {
         updateQuantityMutation.mutate({ id, quantity: newQuantity });
     };
 
+    const handleArchiveSelected = async () => {
+        if (selectedIds.size === 0) {
+            showToast('No items selected', 'info');
+            return;
+        }
+        const confirmed = await showConfirmation(
+            'Confirm Bulk Archive',
+            `Are you sure you want to archive ${selectedIds.size} item(s)?`,
+            'warning',
+            'Yes, archive'
+        );
+        if (!confirmed) return;
+        bulkArchiveMutation.mutate(Array.from(selectedIds));
+    };
+
+    const handleUnarchiveSelected = async () => {
+        if (selectedIds.size === 0) {
+            showToast('No items selected', 'info');
+            return;
+        }
+        const confirmed = await showConfirmation(
+            'Confirm Bulk Unarchive',
+            `Are you sure you want to unarchive ${selectedIds.size} item(s)?`,
+            'question',
+            'Yes, unarchive'
+        );
+        if (!confirmed) return;
+        bulkUnarchiveMutation.mutate(Array.from(selectedIds));
+    };
+
     const goToPage = (newPage: number) => setPage(newPage);
 
     if (isLoading) return <FetchingDetails />;
@@ -402,6 +472,8 @@ export function InventoryList() {
                                 onStatusToggle={handleStatusToggle}
                                 availabilityFilter={availabilityFilter}
                                 onAvailabilityChange={handleAvailabilityChange}
+                                archiveFilter={archiveFilter}
+                                onArchiveChange={handleArchiveChange}
                                 sortBy={sortBy}
                                 sortOrder={sortOrder}
                                 onSortChange={handleSortChange}
@@ -414,6 +486,8 @@ export function InventoryList() {
                                 onToggleMode={toggleSelectionMode}
                                 onSelectAll={handleSelectAll}
                                 onDeleteSelected={handleDeleteSelected}
+                                onArchiveSelected={handleArchiveSelected}
+                                onUnarchiveSelected={handleUnarchiveSelected}
                                 onMarkAvailable={handleMarkAvailable}
                                 onMarkUnavailable={handleMarkUnavailable}
                                 selectedCount={selectedIds.size}
@@ -476,3 +550,4 @@ export function InventoryList() {
         </div>
     );
 }
+

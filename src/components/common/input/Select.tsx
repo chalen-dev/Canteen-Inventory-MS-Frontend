@@ -9,7 +9,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     label?: string;
     name: string;
     value?: string | number;
-    options: Option[];
+    options: readonly Option[];
     error?: string;
     className?: string;          // container margin
     selectClassName?: string;     // select field padding

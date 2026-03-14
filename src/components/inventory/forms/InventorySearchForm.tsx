@@ -1,17 +1,11 @@
-// InventorySearchForm.tsx
 import { useState } from 'react';
-
-// Status options (should match backend enum)
-const STATUS_OPTIONS = [
-    { value: 'in_stock', label: 'In Stock' },
-    { value: 'low_stock', label: 'Low Stock' },
-    { value: 'out_of_stock', label: 'Out of Stock' },
-    { value: 'expired', label: 'Expired' },
-];
-
-type SortField = 'name' | 'quantity' | 'date_acquired' | 'expiry_date';
-type SortOrder = 'asc' | 'desc';
-type AvailabilityFilter = 'all' | 'available' | 'unavailable';
+import {
+    type SortField,
+    type SortOrder,
+    type AvailabilityFilter,
+    type ArchiveFilter,
+    STATUS_OPTIONS,
+} from '../inventoryTypes';
 
 interface InventorySearchFormProps {
     searchTerm: string;
@@ -20,6 +14,8 @@ interface InventorySearchFormProps {
     onStatusToggle: (status: string) => void;
     availabilityFilter: AvailabilityFilter;
     onAvailabilityChange: (filter: AvailabilityFilter) => void;
+    archiveFilter: ArchiveFilter;
+    onArchiveChange: (filter: ArchiveFilter) => void;
     sortBy: SortField;
     sortOrder: SortOrder;
     onSortChange: (by: SortField, order: SortOrder) => void;
@@ -33,6 +29,8 @@ export function InventorySearchForm({
                                         onStatusToggle,
                                         availabilityFilter,
                                         onAvailabilityChange,
+                                        archiveFilter,
+                                        onArchiveChange,
                                         sortBy,
                                         sortOrder,
                                         onSortChange,
@@ -47,7 +45,6 @@ export function InventorySearchForm({
 
     return (
         <div className="p-4 space-y-4">
-            {/* Search row with toggle button */}
             <div className="flex gap-2">
                 <input
                     type="text"
@@ -67,7 +64,6 @@ export function InventorySearchForm({
                 </button>
             </div>
 
-            {/* Advanced filters (conditionally rendered) */}
             {showAdvanced && (
                 <>
                     {/* Status filter */}
@@ -112,6 +108,28 @@ export function InventorySearchForm({
                                     }`}
                                 >
                                     {filter === 'all' ? 'All' : filter === 'available' ? 'Available' : 'Unavailable'}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Archive filter */}
+                    <div>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
+                            Archive status:
+                        </span>
+                        <div className="flex gap-2">
+                            {(['unarchived', 'archived', 'all'] as ArchiveFilter[]).map(filter => (
+                                <button
+                                    key={filter}
+                                    onClick={() => onArchiveChange(filter)}
+                                    className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+                                        archiveFilter === filter
+                                            ? 'bg-primary text-white'
+                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                    }`}
+                                >
+                                    {filter === 'unarchived' ? 'Unarchived' : filter === 'archived' ? 'Archived' : 'All'}
                                 </button>
                             ))}
                         </div>

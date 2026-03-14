@@ -1,9 +1,10 @@
-// InventorySelectForm.tsx
 interface InventoryActionFormProps {
     selectionMode: boolean;
     onToggleMode: () => void;
     onSelectAll: () => void;
     onDeleteSelected: () => void;
+    onArchiveSelected: () => void;          // new
+    onUnarchiveSelected: () => void;        // new
     onMarkAvailable: () => void;
     onMarkUnavailable: () => void;
     selectedCount: number;
@@ -14,6 +15,8 @@ export function InventoryActionForm({
                                         onToggleMode,
                                         onSelectAll,
                                         onDeleteSelected,
+                                        onArchiveSelected,                       // new
+                                        onUnarchiveSelected,                     // new
                                         onMarkAvailable,
                                         onMarkUnavailable,
                                         selectedCount
@@ -48,6 +51,34 @@ export function InventoryActionForm({
                     Select All
                 </button>
 
+                {/* Archive Selected */}
+                <button
+                    onClick={onArchiveSelected}
+                    disabled={!selectionMode || selectedCount === 0}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        selectionMode && selectedCount > 0
+                            ? 'bg-yellow-500 text-white hover:bg-yellow-600'
+                            : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    }`}
+                >
+                    <i className="fas fa-archive mr-2" />
+                    Archive {selectedCount > 0 ? `(${selectedCount})` : ''}
+                </button>
+
+                {/* Unarchive Selected */}
+                <button
+                    onClick={onUnarchiveSelected}
+                    disabled={!selectionMode || selectedCount === 0}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        selectionMode && selectedCount > 0
+                            ? 'bg-teal-500 text-white hover:bg-teal-600'
+                            : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    }`}
+                >
+                    <i className="fas fa-box-open mr-2" />
+                    Unarchive {selectedCount > 0 ? `(${selectedCount})` : ''}
+                </button>
+
                 {/* Mark Available */}
                 <button
                     onClick={onMarkAvailable}
@@ -59,7 +90,7 @@ export function InventoryActionForm({
                     }`}
                 >
                     <i className="fas fa-check-circle mr-2" />
-                    Mark Available {selectedCount > 0 ? `(${selectedCount})` : ''}
+                    Available {selectedCount > 0 ? `(${selectedCount})` : ''}
                 </button>
 
                 {/* Mark Unavailable */}
@@ -73,7 +104,7 @@ export function InventoryActionForm({
                     }`}
                 >
                     <i className="fas fa-times-circle mr-2" />
-                    Mark Unavailable {selectedCount > 0 ? `(${selectedCount})` : ''}
+                    Unavailable {selectedCount > 0 ? `(${selectedCount})` : ''}
                 </button>
 
                 {/* Delete Selected */}
@@ -87,7 +118,7 @@ export function InventoryActionForm({
                     }`}
                 >
                     <i className="fas fa-trash mr-2" />
-                    Delete Selected {selectedCount > 0 ? `(${selectedCount})` : ''}
+                    Delete {selectedCount > 0 ? `(${selectedCount})` : ''}
                 </button>
             </div>
 

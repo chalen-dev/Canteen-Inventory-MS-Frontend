@@ -128,7 +128,7 @@ export function InventoryCard({
         if (log.quantity_in_stock <= 0) {
             return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">Out of Stock</span>;
         }
-        if (log.quantity_in_stock < 10) {
+        if (log.quantity_in_stock <= 10) {
             return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">Low Stock</span>;
         }
         return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">In Stock</span>;
@@ -214,22 +214,32 @@ export function InventoryCard({
                 {getStatusBadge()}
             </div>
 
-            {/* Availability Toggle - redesigned as clickable pill */}
+            {/* Availability Toggle - or archived indicator */}
             <div className="w-20 flex justify-center">
-                <button
-                    onClick={handleToggleAvailability}
-                    disabled={selectionMode || !onToggleAvailability || isExpired}
-                    className={`flex items-center justify-center gap-1 px-2 py-1 text-xs font-medium rounded-full border shadow-sm transition-all ${
-                        log.is_available
-                            ? 'bg-green-500 text-white border-green-600 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 dark:border-green-500'
-                            : 'bg-gray-500 text-white border-gray-600 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 dark:border-gray-500'
-                    } focus:outline-none focus:ring-2 focus:ring-offset-1 ${
-                        log.is_available ? 'focus:ring-green-500' : 'focus:ring-gray-500'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                    <i className={`fas fa-${log.is_available ? 'check' : 'times'} text-xs`} />
-                    <span>{log.is_available ? 'Available' : 'Unavailable'}</span>
-                </button>
+                {log.is_archived ? (
+                    <button
+                        disabled
+                        className="flex items-center justify-center gap-1 px-2 py-1 text-xs font-medium rounded-full border shadow-sm bg-gray-400 text-white border-gray-500 cursor-not-allowed opacity-60"
+                    >
+                        <i className="fas fa-archive text-xs" />
+                        <span>Archived</span>
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleToggleAvailability}
+                        disabled={selectionMode || !onToggleAvailability || isExpired}
+                        className={`flex items-center justify-center gap-1 px-2 py-1 text-xs font-medium rounded-full border shadow-sm transition-all ${
+                            log.is_available
+                                ? 'bg-green-500 text-white border-green-600 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 dark:border-green-500'
+                                : 'bg-gray-500 text-white border-gray-600 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 dark:border-gray-500'
+                        } focus:outline-none focus:ring-2 focus:ring-offset-1 ${
+                            log.is_available ? 'focus:ring-green-500' : 'focus:ring-gray-500'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                        <i className={`fas fa-${log.is_available ? 'check' : 'times'} text-xs`} />
+                        <span>{log.is_available ? 'Available' : 'Unavailable'}</span>
+                    </button>
+                )}
             </div>
 
             {/* Actions */}
