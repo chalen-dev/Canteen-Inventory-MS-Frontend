@@ -8,7 +8,7 @@ import {GuestLayout} from "./components/auth/GuestLayout.tsx";
 import {Unauthorized} from "./components/common/errors/Unauthorized.tsx";
 import {RoleBasedRoute} from "./components/auth/RoleBasedRoute.tsx";
 import POSInterface from "./components/orders/POSInterface.tsx";
-import {Order} from "./components/orders/Order.tsx";
+import {OrdersList} from "./components/orders/OrdersList.tsx";
 import {MenuList} from "./components/menu/MenuList.tsx";
 import {InventoryList} from "./components/inventory/InventoryList.tsx";
 
@@ -37,10 +37,11 @@ function App() {
                         <Route element={<RoleBasedRoute allowedRoles={['admin', 'cashier']} />}>
                             <Route path="/menuList" element={<MenuList />} />
                             <Route path="/inventory" element={<InventoryList />} />
+                            <Route path="/ordersList" element={<OrdersList />} />
                         </Route>
 
                         <Route element={<RoleBasedRoute allowedRoles="customer" />}>
-                            <Route path="/order" element={<Order />} />
+
                         </Route>
                     </Route>
                 </Route>

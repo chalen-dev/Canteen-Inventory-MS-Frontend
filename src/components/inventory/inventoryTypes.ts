@@ -1,10 +1,6 @@
 // inventoryTypes.ts
 
-export interface Category {
-    id: number;
-    name: string;
-    description?: string | null;
-}
+import type {Category} from "../menu/menuTypes.ts";
 
 export interface MenuItem {
     id: number;

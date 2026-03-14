@@ -31,7 +31,7 @@ export function Dashboard() {
                 <DashboardCard label="Orders" value="890" />
                 <DashboardCard label="Active Sessions" value="342" />
                 <DashboardCard label="Conversion Rate" value="2.4%" />
-                <DashboardCard label="Avg. Order Value" value="$61.20" />
+                <DashboardCard label="Avg. OrdersList Value" value="$61.20" />
             </div>
         </>
     );

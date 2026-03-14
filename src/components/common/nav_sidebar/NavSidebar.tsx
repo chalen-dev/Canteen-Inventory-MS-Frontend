@@ -7,7 +7,7 @@ import profileIcon from "../../../assets/profile-icon.jpg";
 
 type LeftSidebarProps = {} & React.HTMLAttributes<HTMLElement>;
 
-export function LeftSidebar({ ...rest }: LeftSidebarProps) {
+export function NavSidebar({ ...rest }: LeftSidebarProps) {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const isAdmin = user?.role === 'admin';
@@ -86,7 +86,7 @@ export function LeftSidebar({ ...rest }: LeftSidebarProps) {
                             <NavLink to="/menuList" icon="fa-utensils">
                                 Menu Items
                             </NavLink>
-                            <NavLink to="/categories" icon="fa-cart-shopping">
+                            <NavLink to="/ordersList" icon="fa-cart-shopping">
                                 Orders
                             </NavLink>
                         </>
