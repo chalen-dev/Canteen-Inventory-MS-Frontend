@@ -61,11 +61,11 @@ export function NavSidebar({ ...rest }: LeftSidebarProps) {
 
                     {( isCustomer &&
                         <>
-                            <NavLink to="/" icon="fa-cart-shopping">
+                            <NavLink to="/menuOrder" icon="fa-cart-shopping">
                                 Place Order
                             </NavLink>
-                            <NavLink to="/" icon="fa-clock-rotate-left">
-                                Order History
+                            <NavLink to="/myOrders" icon="fa-clock-rotate-left">
+                                My Orders
                             </NavLink>
                         </>
                     )}

@@ -217,10 +217,6 @@ export function OrdersList() {
 
     const handleCancelEdit = () => setEditingOrder(null);
 
-    const handleView = (id: number) => {
-        console.log('View order', id);
-    };
-
     const handleOrderAdded = (action: 'add' | 'update') => {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
         queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
@@ -383,7 +379,6 @@ export function OrdersList() {
                             order={order}
                             onDelete={handleDelete}
                             onEdit={handleEdit}
-                            onView={handleView}
                             onStatusChange={handleStatusChange}
                             selectionMode={selectionMode}
                             isSelected={selectedIds.has(order.id)}

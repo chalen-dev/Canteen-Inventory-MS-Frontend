@@ -6,7 +6,7 @@ export function LoginCustomer() {
         <LoginForm
             headerTitle={APP_NAME}
             allowedRoles={['customer']}
-            redirectPath="/order"
+            redirectPath="/menuOrder"
             blockedMessage="Invalid customer credentials"
         />
     );

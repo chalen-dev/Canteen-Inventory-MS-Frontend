@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type {Order} from "../orderTypes.ts";
 import {showToast} from "../../../utils/swalHelpers.ts";
 import {OrderItemsTable} from "./OrderItemsTable.tsx";
-import {OrderStatusModal} from "./order_card/OrderStatusModal.tsx";
+import {OrderStatusModal} from "./OrderStatusModal.tsx";
 
 interface OrderRowProps {
     order: Order;

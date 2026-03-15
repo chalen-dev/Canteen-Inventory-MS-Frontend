@@ -1,6 +1,6 @@
 // components/orders/partials/OrderStatusModal.tsx
 import { useState } from 'react';
-import { ORDER_STATUS_OPTIONS } from "../../orderTypes";
+import { ORDER_STATUS_OPTIONS } from "../orderTypes.ts";
 
 interface OrderStatusModalProps {
     isOpen: boolean;

@@ -13,14 +13,20 @@ import {MenuList} from "./components/menu/MenuList.tsx";
 import {InventoryList} from "./components/inventory/InventoryList.tsx";
 import {LoginStaff} from "./components/auth/LoginStaff.tsx";
 
+import {CustomerLayout} from "./components/customer_side/CustomerLayout.tsx";
+import FoodChoices from "./components/customer_side/menu_order/FoodChoices.tsx";
+import MenuOrder from "./components/customer_side/menu_order/MenuOrder.tsx";
+import Checkout from "./components/customer_side/menu_order/Checkout.tsx";
+import MyOrders from "./components/customer_side/my_orders/MyOrders.tsx";
+
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route element={<GuestLayout />}>
-                    <Route path="/loginStaff" element={<LoginCustomer />} />
-                    <Route path="/" element={<LoginStaff />} />
+                    <Route path="/" element={<LoginCustomer />} />
+                    <Route path="/loginStaff" element={<LoginStaff />} />
                     <Route path="/unauthorized" element={<Unauthorized />} />
                     <Route path="*" element={<LoginCustomer />}/>
                 </Route>
@@ -41,12 +47,15 @@ function App() {
                             <Route path="/inventory" element={<InventoryList />} />
                             <Route path="/ordersList" element={<OrdersList />} />
                         </Route>
-
+                    </Route>
+                    <Route element={<CustomerLayout />}>
                         <Route element={<RoleBasedRoute allowedRoles="customer" />}>
-
+                            <Route path="/menuOrder" element={<MenuOrder />} />
+                            <Route path="/menu/category/:categoryId" element={<FoodChoices />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/myOrders" element={<MyOrders />} />
                         </Route>
                     </Route>
-
                     <Route element={<RoleBasedRoute allowedRoles="cashier" />}>
                         <Route path="/pos" element={<POSInterface />} />
                     </Route>

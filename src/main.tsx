@@ -9,19 +9,22 @@ import {HeaderTitleProvider} from "./contexts/HeaderTitleContext.tsx";
 import {AuthProvider} from "./contexts/AuthContext.tsx";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {queryClient} from "./utils/queryClient.ts";
+import {NotificationProvider} from "./contexts/NotificationContext.tsx";
 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
       <QueryClientProvider client={queryClient}>
           <AuthProvider>
-              <HelmetProvider>
-                  <HeaderTitleProvider>
-                      <ThemeProvider>
-                          <App />
-                      </ThemeProvider>
-                  </HeaderTitleProvider>
-              </HelmetProvider>
+              <NotificationProvider>
+                  <HelmetProvider>
+                      <HeaderTitleProvider>
+                          <ThemeProvider>
+                              <App />
+                          </ThemeProvider>
+                      </HeaderTitleProvider>
+                  </HelmetProvider>
+              </NotificationProvider>
           </AuthProvider>
       </QueryClientProvider>
   </StrictMode>,
