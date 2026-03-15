@@ -32,7 +32,7 @@ export function Login() {
             if (user.role === 'admin') {
                 navigate('/dashboard', { replace: true });
             } else if (user.role === 'cashier') {
-                navigate('/pos', { replace: true });
+                navigate('/ordersList', { replace: true });
             } else if (user.role === 'customer') {
                 navigate('/order', { replace: true });
             }

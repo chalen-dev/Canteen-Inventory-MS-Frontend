@@ -50,11 +50,27 @@ export function OrderForm({
             setOrderStatus(editingOrder.order_status);
             setDescription(editingOrder.description || '');
             if (isStaff) {
-                const customer = customers.find(c => c.id === editingOrder.user_id);
-                setSelectedCustomer(customer || null);
-                if (customer) setCustomerSearchTerm(customer.name);
+                // Use the user object directly from the order
+                if (editingOrder.user) {
+                    setSelectedCustomer(editingOrder.user);
+                    setCustomerSearchTerm(editingOrder.user.name);
+                } else {
+                    // fallback to searching the customers list
+                    const customer = customers.find(c => c.id === editingOrder.user_id);
+                    setSelectedCustomer(customer || null);
+                    if (customer) setCustomerSearchTerm(customer.name);
+                }
             }
-            setSelectedItems([]);
+            // Populate items from the order's existing items
+            if (editingOrder.order_items && editingOrder.order_items.length > 0) {
+                const items = editingOrder.order_items.map(item => ({
+                    inventoryId: item.inventory_id,
+                    quantity: item.quantity,
+                }));
+                setSelectedItems(items);
+            } else {
+                setSelectedItems([]);
+            }
         } else {
             resetForm();
         }
@@ -125,12 +141,19 @@ export function OrderForm({
         try {
             let orderId: number;
             if (editingOrder) {
-                await api.put(`/orders/${editingOrder.id}`, {
+                // Use the new endpoint that updates order + items
+                const payload = {
                     order_status: orderStatus,
                     description: description || null,
-                });
+                    items: selectedItems.map(item => ({
+                        inventory_id: item.inventoryId,
+                        quantity: item.quantity,
+                    })),
+                };
+                await api.put(`/orders/${editingOrder.id}/with-items`, payload);
                 orderId = editingOrder.id;
             } else {
+                // Create mode (unchanged)
                 let createRes;
                 if (isStaff) {
                     createRes = await api.post('/orders/for-customer', {
@@ -165,6 +188,7 @@ export function OrderForm({
             resetForm();
             if (onOrderAdded) onOrderAdded(editingOrder ? 'update' : 'add');
         } catch (err) {
+            // Error handling remains the same
             let message = editingOrder ? 'Failed to update order' : 'Failed to create order';
             if (axios.isAxiosError(err)) {
                 message = err.response?.data?.message || err.message;

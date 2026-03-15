@@ -59,14 +59,6 @@ export function NavSidebar({ ...rest }: LeftSidebarProps) {
                         </>
                     )}
 
-                    {( isCashier &&
-                        <>
-                            <NavLink to="/pos" icon="fa-cash-register">
-                                Point of Sale
-                            </NavLink>
-                        </>
-                    )}
-
                     {( isCustomer &&
                         <>
                             <NavLink to="/" icon="fa-cart-shopping">
@@ -80,17 +72,38 @@ export function NavSidebar({ ...rest }: LeftSidebarProps) {
 
                     {isCashierAndAdmin && (
                         <>
+                            <NavLink to="/ordersList" icon="fa-cart-shopping">
+                                Orders
+                            </NavLink>
                             <NavLink to="/inventory" icon="fa-boxes">
                                 Inventory
                             </NavLink>
                             <NavLink to="/menuList" icon="fa-utensils">
                                 Menu Items
                             </NavLink>
-                            <NavLink to="/ordersList" icon="fa-cart-shopping">
-                                Orders
-                            </NavLink>
                         </>
                     )}
+
+                    {(isCashier && (
+                        <NavLink
+                            to="/pos"
+                            icon="fa-cash-register"
+                            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                                e.preventDefault(); // Stop default navigation
+                                showConfirmation(
+                                    'Go to POS',
+                                    'Are you sure you want to access the Point of Sale?',
+                                    'question'
+                                ).then((confirmed) => {
+                                    if (confirmed) {
+                                        navigate('/pos'); // Navigate after confirmation
+                                    }
+                                });
+                            }}
+                        >
+                            Point of Sale
+                        </NavLink>
+                    ))}
 
                     {isAdmin && (
                         <>

@@ -20,7 +20,6 @@ export function OrderCard({
                               order,
                               onDelete,
                               onEdit,
-                              onView,
                               onStatusChange,
                               selectionMode = false,
                               isSelected = false,
@@ -42,12 +41,6 @@ export function OrderCard({
         e.stopPropagation();
         if (selectionMode) return;
         onDelete(order.id);
-    };
-
-    const handleView = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (selectionMode) return;
-        onView(order.id);
     };
 
     const handleStatusClick = (e: React.MouseEvent) => {
@@ -167,13 +160,6 @@ export function OrderCard({
                 </div>
 
                 <div className="w-40 flex gap-2 justify-end">
-                    <button
-                        onClick={handleView}
-                        disabled={selectionMode}
-                        className="px-3 py-1 text-sm rounded transition-colors bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        View
-                    </button>
                     <button
                         onClick={handleEdit}
                         disabled={selectionMode}

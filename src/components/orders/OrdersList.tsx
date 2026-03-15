@@ -229,6 +229,7 @@ export function OrdersList() {
 
     const handleOrderAdded = (action: 'add' | 'update') => {
         queryClient.invalidateQueries({ queryKey: ['orders'] });
+        queryClient.invalidateQueries({ queryKey: ['inventory-logs'] });
         showToast(action === 'add' ? 'Order created successfully' : 'Order updated successfully', 'success');
         setEditingOrder(null);
     };

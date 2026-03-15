@@ -150,15 +150,6 @@ export function OrderItemSelectorModal({
         });
     };
 
-    const handleQuantityChange = (logId: number, quantity: number) => {
-        if (quantity < 1) return;
-        setSelectedItems(prev => {
-            const newMap = new Map(prev);
-            newMap.set(logId, quantity);
-            return newMap;
-        });
-    };
-
     const handleAdd = () => {
         const items = Array.from(selectedItems.entries()).map(([inventoryId, quantity]) => ({
             inventoryId,
@@ -264,7 +255,6 @@ export function OrderItemSelectorModal({
                                 logs={paginatedLogs}
                                 selectedItems={selectedItems}
                                 onCheckboxChange={handleCheckboxChange}
-                                onQuantityChange={handleQuantityChange}
                                 isAvailable={isAvailable}
                             />
                         </div>
